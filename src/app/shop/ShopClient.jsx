@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { BadgePercent, ChevronDown, ChevronLeft, ChevronRight, Filter, PackageCheck, RotateCcw, SlidersHorizontal, Sparkles, Truck, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { BadgePercent, ChevronDown, ChevronLeft, ChevronRight, Filter, PackageCheck, RotateCcw, Search, SlidersHorizontal, Sparkles, Truck, X } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
 import BalloonVisual from "@/components/product/BalloonVisual";
 import { getAllCategories, getAllProducts } from "@/lib/catalog";
@@ -60,7 +60,9 @@ function Pill({ active, children, onClick, count }) {
 
 export default function ShopClient() {
   const params = useSearchParams();
-  const query = params.get("q")?.toLowerCase() ?? "";
+  const router = useRouter();
+  const [searchInput, setSearchInput] = useState(params.get("q") ?? "");
+  const query = searchInput.trim().toLowerCase();
 
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -80,7 +82,7 @@ export default function ShopClient() {
   }, []);
 
   const ITEMS_PER_PAGE = 12;
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(Number(params.get("page")) || 1);
 
   const [category, setCategory] = useState(params.get("category") ?? "");
   const [shape, setShape] = useState(params.get("shape") ?? "");
@@ -89,12 +91,45 @@ export default function ShopClient() {
   const [sort, setSort] = useState("featured");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
+  // Re-sync from the URL whenever it actually changes (e.g. searching again
+  // from the navbar while already on this page) — a plain `useState` only
+  // reads the params once on mount, so without this a second navbar search
+  // would update the address bar but leave the results/input stuck on the
+  // first query.
+  const paramsKey = params.toString();
+  useEffect(() => {
+    setSearchInput(params.get("q") ?? "");
+    setCategory(params.get("category") ?? "");
+    setShape(params.get("shape") ?? "");
+    setTheme(params.get("theme") ?? "");
+    // Page reset is already handled by the filterKey check below once these
+    // state updates land.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramsKey]);
+
   const filterKey = `${category}|${shape}|${theme}|${color}|${query}|${sort}`;
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
   if (filterKey !== prevFilterKey) {
     setPrevFilterKey(filterKey);
     setPage(1);
   }
+
+  // Keep the URL in sync with the current filters/page (without adding a
+  // history entry per change) so opening a product from page 2 and hitting
+  // the browser Back button lands back on page 2 instead of resetting to
+  // page 1 — the product detail page is a real navigation, so Back returns
+  // to whatever URL this replace left behind.
+  useEffect(() => {
+    const sp = new URLSearchParams();
+    if (category) sp.set("category", category);
+    if (shape) sp.set("shape", shape);
+    if (theme) sp.set("theme", theme);
+    if (query) sp.set("q", searchInput.trim());
+    if (page > 1) sp.set("page", String(page));
+    const next = sp.toString();
+    router.replace(next ? `/shop?${next}` : "/shop", { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, shape, theme, query, page]);
 
   useEffect(() => {
     if (!filtersOpen) return;
@@ -135,12 +170,34 @@ export default function ShopClient() {
     return filtered.slice(start, start + ITEMS_PER_PAGE);
   }, [filtered, page]);
 
-  const activeCount = [category, shape, theme, color].filter(Boolean).length;
+  // Coming back (browser Back) from a product detail page — jump straight to
+  // that product's card instead of leaving the visitor at the top of the
+  // page they'd have to re-scroll through.
+  useEffect(() => {
+    if (loading) return;
+    let targetSlug;
+    try {
+      targetSlug = sessionStorage.getItem("shopReturnSlug");
+    } catch {
+      return;
+    }
+    if (!targetSlug || !paginated.some((p) => p.slug === targetSlug)) return;
+    const el = document.getElementById(`product-card-${targetSlug}`);
+    el?.scrollIntoView({ block: "center" });
+    try {
+      sessionStorage.removeItem("shopReturnSlug");
+    } catch {
+      // ignore
+    }
+  }, [loading, paginated]);
+
+  const activeCount = [category, shape, theme, color, query].filter(Boolean).length;
   const clearAll = () => {
     setCategory("");
     setShape("");
     setTheme("");
     setColor("");
+    setSearchInput("");
     setPage(1);
   };
 
@@ -346,6 +403,30 @@ export default function ShopClient() {
 
       {/* ── MAIN CATALOG SECTION ───────────────────────── */}
       <div className="container-page py-8 lg:py-10">
+        {/* Search bar */}
+        <div className="mb-4 rounded-3xl bg-white/95 border border-pink-100/90 p-2 shadow-sm backdrop-blur-md">
+          <div className="relative flex items-center">
+            <Search size={18} className="pointer-events-none absolute left-4 text-slate-400" />
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search balloons, pumps, ribbons…"
+              className="w-full rounded-2xl bg-transparent py-3 pl-11 pr-11 text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400 focus:bg-purple-50/40"
+            />
+            {searchInput && (
+              <button
+                type="button"
+                onClick={() => setSearchInput("")}
+                className="absolute right-3.5 grid h-7 w-7 place-items-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
+                aria-label="Clear search"
+              >
+                <X size={15} />
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* Controls bar */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-3xl bg-white/95 border border-pink-100/90 p-4 sm:px-6 shadow-sm backdrop-blur-md">
           <div className="flex flex-wrap items-center gap-2">
@@ -353,6 +434,12 @@ export default function ShopClient() {
               Showing <span className="text-[#7E22CE] font-black">{filtered.length}</span> Products
             </span>
 
+            {query && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/90 border border-emerald-200 px-3.5 py-1 text-xs font-extrabold text-emerald-900">
+                &ldquo;{searchInput.trim()}&rdquo;
+                <button onClick={() => setSearchInput("")} className="hover:text-emerald-950"><X size={12} /></button>
+              </span>
+            )}
             {category && (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-100/90 border border-purple-200 px-3.5 py-1 text-xs font-extrabold text-[#7E22CE]">
                 {currentCategory?.name ?? category}
@@ -384,11 +471,11 @@ export default function ShopClient() {
             )}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex w-full items-center gap-3 sm:w-auto">
             <button
               type="button"
               onClick={() => setFiltersOpen(true)}
-              className="inline-flex items-center gap-2 rounded-2xl bg-purple-50 border border-purple-200 px-4 py-2.5 text-xs sm:text-sm font-bold text-[#7E22CE] hover:border-purple-300 transition lg:hidden shadow-2xs"
+              className="inline-flex shrink-0 items-center gap-2 rounded-2xl bg-purple-50 border border-purple-200 px-4 py-2.5 text-xs sm:text-sm font-bold text-[#7E22CE] hover:border-purple-300 transition lg:hidden shadow-2xs"
             >
               <SlidersHorizontal size={15} />
               Filters
@@ -397,11 +484,11 @@ export default function ShopClient() {
               )}
             </button>
 
-            <div className="relative">
+            <div className="relative min-w-0 flex-1 sm:flex-none">
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="appearance-none rounded-2xl border border-slate-200/90 bg-slate-50/90 py-2.5 pl-4 pr-9 text-xs sm:text-sm font-bold text-[#0F172A] outline-none transition hover:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-50"
+                className="w-full min-w-0 appearance-none rounded-2xl border border-slate-200/90 bg-slate-50/90 py-2.5 pl-4 pr-9 text-xs sm:text-sm font-bold text-[#0F172A] outline-none transition hover:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-50"
               >
                 {sortOptions.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -460,7 +547,20 @@ export default function ShopClient() {
               <>
                 <div className="grid grid-cols-2 gap-3.5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {paginated.map((product, index) => (
-                    <div key={product.id} className="animate-fade-up h-full flex flex-col" style={{ animationDelay: `${Math.min(index, 8) * 0.05}s` }}>
+                    <div
+                      key={product.id}
+                      id={`product-card-${product.slug}`}
+                      className="animate-fade-up h-full flex flex-col"
+                      style={{ animationDelay: `${Math.min(index, 8) * 0.05}s` }}
+                      onClick={(e) => {
+                        if (e.target.closest("button")) return;
+                        try {
+                          sessionStorage.setItem("shopReturnSlug", product.slug);
+                        } catch {
+                          // ignore storage failures (private mode etc.)
+                        }
+                      }}
+                    >
                       <ProductCard product={product} />
                     </div>
                   ))}

@@ -147,38 +147,41 @@ export default function Navbar({ categories = staticCategories }) {
           </nav>
 
           {/* Right icons */}
-          <div className="flex items-center gap-1">
-            {/* Search — desktop only */}
+          <div className="flex items-center gap-0.5 sm:gap-1">
+            {/* Search */}
             <button
               type="button"
               onClick={() => { setSearchOpen((o) => !o); setMenuOpen(false); }}
-              className={`hidden lg:grid h-10 w-10 place-items-center rounded-full border transition-all duration-200 ${
+              className={`grid h-9 w-9 lg:h-10 lg:w-10 place-items-center rounded-full border transition-all duration-200 ${
                 searchOpen
                   ? "border-purple-300 bg-purple-100 text-purple-700"
                   : "border-slate-200 bg-slate-50 text-slate-500 hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700"
               }`}
               aria-label="Search"
             >
-              <Search size={17} />
+              <Search size={16} className="lg:hidden" />
+              <Search size={17} className="hidden lg:block" />
             </button>
 
             {/* Account */}
             <Link
               href={user ? "/account" : "/login"}
-              className="grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-200 hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700"
+              className="grid h-9 w-9 lg:h-10 lg:w-10 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-200 hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700"
               aria-label={user ? "My account" : "Sign in"}
             >
-              <User size={17} />
+              <User size={16} className="lg:hidden" />
+              <User size={17} className="hidden lg:block" />
             </Link>
 
             {/* Cart */}
             <button
               type="button"
               onClick={openCart}
-              className="relative grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-200 hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700"
+              className="relative grid h-9 w-9 lg:h-10 lg:w-10 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-200 hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700"
               aria-label="Open cart"
             >
-              <ShoppingBag size={17} />
+              <ShoppingBag size={16} className="lg:hidden" />
+              <ShoppingBag size={17} className="hidden lg:block" />
               {hydrated && count > 0 && (
                 <span className="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-pink-500 px-1 text-[11px] font-extrabold text-white shadow-sm">
                   {count}
@@ -201,10 +204,10 @@ export default function Navbar({ categories = staticCategories }) {
             <button
               type="button"
               onClick={() => { setMenuOpen((o) => !o); setSearchOpen(false); }}
-              className="grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition-colors hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700 lg:hidden"
+              className="grid h-9 w-9 lg:h-10 lg:w-10 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition-colors hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700 lg:hidden"
               aria-label="Toggle menu"
             >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+              {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
@@ -360,7 +363,7 @@ export default function Navbar({ categories = staticCategories }) {
             <p className="pb-2 text-xs font-extrabold uppercase tracking-wider text-slate-400">
               Categories
             </p>
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="flex flex-col gap-1.5">
               {categories.map((c) => (
                 <Link
                   key={c.slug}

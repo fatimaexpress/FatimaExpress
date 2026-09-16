@@ -649,7 +649,7 @@ export default function ProductForm({ action, product, categories }) {
                   Active (visible in shop)
                 </label>
                 <label className="flex items-center gap-2.5 text-sm font-medium">
-                  <input type="checkbox" name="is_featured" defaultChecked={product?.is_featured ?? false} className="h-4 w-4 rounded accent-brand-700" />
+                  <input type="checkbox" name="is_featured" defaultChecked={product?.is_featured ?? true} className="h-4 w-4 rounded accent-brand-700" />
                   Featured (shown on homepage)
                 </label>
               </div>

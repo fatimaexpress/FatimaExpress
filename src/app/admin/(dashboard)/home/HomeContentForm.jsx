@@ -2,10 +2,11 @@
 
 import { useActionState, useState } from "react";
 import Image from "next/image";
-import { Droplets, Gift, HelpCircle, Images, LoaderCircle, MessageSquareQuote, Package, Plus, Search, ShieldCheck, Sparkles, Star, Trash2, X } from "lucide-react";
+import { Droplets, Eye, EyeOff, Gift, HelpCircle, Images, LoaderCircle, MessageSquareQuote, Package, Plus, Search, ShieldCheck, Sparkles, Star, Trash2, X } from "lucide-react";
 import ImageUploader from "@/components/admin/ImageUploader";
 import { updateHomeContent } from "@/actions/admin/homeContent";
 import { themes } from "@/data/products";
+import { DEFAULT_SECTION_VISIBILITY } from "@/lib/homeContent";
 
 const inputClass =
   "w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100";
@@ -114,6 +115,12 @@ function SectionTitle({ icon: Icon, children }) {
 export default function HomeContentForm({ content, products = [] }) {
   const [state, formAction, pending] = useActionState(updateHomeContent, {});
   const [activeTab, setActiveTab] = useState("hero");
+  const [sectionVisibility, setSectionVisibility] = useState({ ...DEFAULT_SECTION_VISIBILITY, ...content.sectionVisibility });
+
+  const toggleSectionVisibility = (id) => (e) => {
+    e.stopPropagation();
+    setSectionVisibility((current) => ({ ...current, [id]: !current[id] }));
+  };
 
   const [heroSlides, setHeroSlides] = useState(content.heroSlides?.length ? content.heroSlides : [BLANK_SLIDE]);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -219,6 +226,7 @@ export default function HomeContentForm({ content, products = [] }) {
 
   return (
     <form action={formAction} className="mt-6">
+      <input type="hidden" name="sectionVisibility" value={JSON.stringify(sectionVisibility)} />
       <input type="hidden" name="heroSlides" value={JSON.stringify(heroSlides)} />
       <input type="hidden" name="foil_eyebrow" value={foil.eyebrow} />
       <input type="hidden" name="foil_heading" value={foil.heading} />
@@ -256,17 +264,30 @@ export default function HomeContentForm({ content, products = [] }) {
       <div className="no-scrollbar sticky top-0 z-20 -mx-1 mb-6 flex gap-1.5 overflow-x-auto border-b border-slate-100 bg-slate-50/80 px-1 py-2 backdrop-blur">
         {TABS.map((tab) => {
           const active = activeTab === tab.id;
+          const visible = sectionVisibility[tab.id] !== false;
           return (
             <button
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+              className={`flex shrink-0 items-center gap-2 rounded-xl py-2.5 pl-3.5 pr-2 text-sm font-semibold transition ${
                 active ? "bg-gradient-to-r from-brand-700 to-brand-800 text-white shadow-sm" : "text-slate-600 hover:bg-white hover:text-brand-700"
-              }`}
+              } ${visible ? "" : "opacity-50"}`}
             >
               <tab.icon size={15} className={active ? "text-white" : "text-slate-400"} />
               {tab.label}
+              <span
+                role="button"
+                tabIndex={0}
+                onClick={toggleSectionVisibility(tab.id)}
+                onKeyDown={(e) => e.key === "Enter" && toggleSectionVisibility(tab.id)(e)}
+                title={visible ? "Visible on homepage — click to hide" : "Hidden from homepage — click to show"}
+                className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg transition ${
+                  active ? "hover:bg-white/20" : "hover:bg-slate-200"
+                }`}
+              >
+                {visible ? <Eye size={13} /> : <EyeOff size={13} className={active ? "text-white/70" : "text-slate-400"} />}
+              </span>
             </button>
           );
         })}
@@ -714,16 +735,20 @@ export default function HomeContentForm({ content, products = [] }) {
         {/* Accessories */}
         {activeTab === "accessories" && (
           <div>
-            <SectionTitle icon={Package}>Accessories Section</SectionTitle>
-            <p className="mt-1 text-xs text-slate-500">Products shown are pulled from your catalogue automatically.</p>
+            <SectionTitle icon={Package}>Our Products Section</SectionTitle>
+            <p className="mt-1 text-xs text-slate-500">
+              This text is used for the &ldquo;Our Products&rdquo; showcase near the top of the homepage — products
+              shown there are pulled from your catalogue automatically. (Also feeds the separate Accessories row,
+              which is hidden by default — see its eye icon on the tab above.)
+            </p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div>
                 <label className={labelClass}>Eyebrow text</label>
-                <input value={accessories.eyebrow} onChange={setAccessoriesField("eyebrow")} className={inputClass} />
+                <input value={accessories.eyebrow} onChange={setAccessoriesField("eyebrow")} className={inputClass} placeholder="Shop The Collection" />
               </div>
               <div>
                 <label className={labelClass}>Heading</label>
-                <input value={accessories.heading} onChange={setAccessoriesField("heading")} className={inputClass} />
+                <input value={accessories.heading} onChange={setAccessoriesField("heading")} className={inputClass} placeholder="Our Products" />
               </div>
             </div>
           </div>

@@ -7,7 +7,10 @@ import { whatsappLink } from "@/data/site";
 export default function WhatsAppFloatButton({ phone }) {
   const pathname = usePathname();
 
-  if (pathname?.startsWith("/admin") || !phone) return null;
+  // Hidden on product detail pages — it would overlap the sticky mobile
+  // Add to Cart bar there. `/shop/` (not bare `/shop`) targets only
+  // `/shop/[slug]`, leaving the shop listing page unaffected.
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/shop/") || !phone) return null;
 
   return (
     <a

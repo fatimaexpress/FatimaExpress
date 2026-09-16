@@ -107,11 +107,11 @@ export default function FaqSection({ faqs, heading }) {
                     {/* Interactive Feedback & WhatsApp Strip */}
                     <div className="mt-4 pt-3 border-t border-purple-100/60 flex flex-wrap items-center justify-between gap-3 text-sm sm:text-base">
                       <div className="flex items-center gap-2 text-slate-500 font-medium">
-                        <span>Was this answer helpful?</span>
+                        <span className="whitespace-nowrap">Helpful?</span>
                         <button
                           type="button"
                           onClick={(e) => handleHelpfulClick(idx, e)}
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border transition-all ${
+                          className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap px-2.5 py-1 rounded-full border transition-all ${
                             isHelpful
                               ? "bg-emerald-50 text-emerald-700 border-emerald-300 font-bold"
                               : "bg-white text-slate-600 border-slate-200 hover:border-purple-300 hover:text-[#7E22CE]"

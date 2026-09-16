@@ -16,6 +16,7 @@ export async function getHomeContent() {
   const content = data?.home_content;
 
   return {
+    sectionVisibility: { ...DEFAULT_HOME_CONTENT.sectionVisibility, ...content?.sectionVisibility },
     heroSlides: normalizeHeroSlides(content).map((slide) => ({ ...DEFAULT_HOME_CONTENT.heroSlides[0], ...slide })),
     foil: {
       ...DEFAULT_HOME_CONTENT.foil,
@@ -77,6 +78,7 @@ export async function updateHomeContent(_prevState, formData) {
   let bubbleSteps;
   let testimonials;
   let faqs;
+  let sectionVisibility;
   try {
     gallery = JSON.parse(formData.get("gallery") || "[]");
     featureStrip = JSON.parse(formData.get("featureStrip") || "[]");
@@ -86,6 +88,7 @@ export async function updateHomeContent(_prevState, formData) {
     bubbleSteps = JSON.parse(formData.get("bubble_steps") || "[]");
     testimonials = JSON.parse(formData.get("testimonials") || "[]");
     faqs = JSON.parse(formData.get("faqs") || "[]");
+    sectionVisibility = JSON.parse(formData.get("sectionVisibility") || "{}");
   } catch {
     return { error: "Invalid gallery, feature strip, hero slide, foil slide, bubble, testimonial or FAQ data." };
   }
@@ -119,6 +122,7 @@ export async function updateHomeContent(_prevState, formData) {
   const { error } = await supabase.from("site_settings").upsert({
     id: 1,
     home_content: {
+      sectionVisibility: { ...DEFAULT_HOME_CONTENT.sectionVisibility, ...sectionVisibility },
       heroSlides,
       foil,
       bubble,

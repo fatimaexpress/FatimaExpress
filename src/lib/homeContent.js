@@ -21,7 +21,23 @@ const DEFAULT_HERO_SLIDE = {
   ctaLink: "/contact",
 };
 
+// Lets an admin hide a whole homepage section without deleting its content.
+// "accessories" defaults to hidden since its content now lives inside the
+// merged "Our Products" showcase instead of its own section.
+export const DEFAULT_SECTION_VISIBILITY = {
+  hero: true,
+  foil: true,
+  bubble: true,
+  accessories: false,
+  features: true,
+  gallery: true,
+  testimonials: true,
+  faqs: true,
+  newsletter: true,
+};
+
 export const DEFAULT_HOME_CONTENT = {
+  sectionVisibility: DEFAULT_SECTION_VISIBILITY,
   heroSlides: [DEFAULT_HERO_SLIDE],
   foil: {
     eyebrow: "Foil Balloons Collection",
@@ -175,6 +191,7 @@ function normalizeHeroSlides(content) {
 
 function mergeHomeContent(content) {
   return {
+    sectionVisibility: { ...DEFAULT_SECTION_VISIBILITY, ...content?.sectionVisibility },
     heroSlides: normalizeHeroSlides(content),
     foil: {
       ...DEFAULT_HOME_CONTENT.foil,

@@ -1,4 +1,5 @@
 import Hero from "@/components/home/Hero";
+import ProductsShowcase from "@/components/home/ProductsShowcase";
 import FoilCollection from "@/components/home/FoilCollection";
 import BubbleSection from "@/components/home/BubbleSection";
 import AccessoriesRow from "@/components/home/AccessoriesRow";
@@ -15,6 +16,7 @@ export const revalidate = 0;
 
 export default async function HomePage() {
   const [products, homeContent] = await Promise.all([getAllProducts(), getHomeContentPublic()]);
+  const visibility = homeContent.sectionVisibility;
   const featuredProducts = products.filter((p) => p.featured);
   const accessories = products
     .filter((p) => p.category === "accessories")
@@ -22,34 +24,54 @@ export default async function HomePage() {
     .slice(0, 5);
   const foilFeatured =
     featuredProducts.find((p) => p.category === "foil-balloons") || products.find((p) => p.category === "foil-balloons");
+  const showcaseProducts = [...featuredProducts, ...products.filter((p) => !p.featured)];
 
   return (
     <>
-      <Hero slides={homeContent.heroSlides} />
+      {visibility.hero && <Hero slides={homeContent.heroSlides} />}
       <Reveal>
-        <FoilCollection featured={foilFeatured} content={homeContent.foil} />
+        <ProductsShowcase products={showcaseProducts} content={homeContent.accessories} />
       </Reveal>
-      <Reveal>
-        <BubbleSection content={homeContent.bubble} />
-      </Reveal>
-      <Reveal>
-        <AccessoriesRow accessories={accessories} content={homeContent.accessories} />
-      </Reveal>
-      <Reveal>
-        <FeatureStrip features={homeContent.featureStrip} />
-      </Reveal>
-      <Reveal>
-        <InspirationGallery setups={homeContent.gallery} heading={homeContent.galleryHeading} />
-      </Reveal>
-      <Reveal>
-        <Testimonials testimonials={homeContent.testimonials} heading={homeContent.testimonialsHeading} />
-      </Reveal>
-      <Reveal>
-        <FaqSection faqs={homeContent.faqs} heading={homeContent.faqsHeading} />
-      </Reveal>
-      <Reveal>
-        <Newsletter content={homeContent.newsletter} />
-      </Reveal>
+      {visibility.accessories && (
+        <Reveal>
+          <AccessoriesRow accessories={accessories} content={homeContent.accessories} />
+        </Reveal>
+      )}
+      {visibility.foil && (
+        <Reveal>
+          <FoilCollection featured={foilFeatured} content={homeContent.foil} />
+        </Reveal>
+      )}
+      {visibility.bubble && (
+        <Reveal>
+          <BubbleSection content={homeContent.bubble} />
+        </Reveal>
+      )}
+      {visibility.features && (
+        <Reveal>
+          <FeatureStrip features={homeContent.featureStrip} />
+        </Reveal>
+      )}
+      {visibility.gallery && (
+        <Reveal>
+          <InspirationGallery setups={homeContent.gallery} heading={homeContent.galleryHeading} />
+        </Reveal>
+      )}
+      {visibility.testimonials && (
+        <Reveal>
+          <Testimonials testimonials={homeContent.testimonials} heading={homeContent.testimonialsHeading} />
+        </Reveal>
+      )}
+      {visibility.faqs && (
+        <Reveal>
+          <FaqSection faqs={homeContent.faqs} heading={homeContent.faqsHeading} />
+        </Reveal>
+      )}
+      {visibility.newsletter && (
+        <Reveal>
+          <Newsletter content={homeContent.newsletter} />
+        </Reveal>
+      )}
     </>
   );
 }
