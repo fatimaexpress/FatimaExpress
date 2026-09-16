@@ -264,6 +264,10 @@ export default function HomeContentForm({ content, products = [] }) {
       <div className="no-scrollbar sticky top-0 z-20 -mx-1 mb-6 flex gap-1.5 overflow-x-auto border-b border-slate-100 bg-slate-50/80 px-1 py-2 backdrop-blur">
         {TABS.map((tab) => {
           const active = activeTab === tab.id;
+          // "accessories" no longer renders its own homepage section — its
+          // fields now feed the "Our Products" showcase instead, which is
+          // always visible — so it gets no show/hide toggle here.
+          const hasVisibilityToggle = tab.id !== "accessories";
           const visible = sectionVisibility[tab.id] !== false;
           return (
             <button
@@ -272,22 +276,24 @@ export default function HomeContentForm({ content, products = [] }) {
               onClick={() => setActiveTab(tab.id)}
               className={`flex shrink-0 items-center gap-2 rounded-xl py-2.5 pl-3.5 pr-2 text-sm font-semibold transition ${
                 active ? "bg-gradient-to-r from-brand-700 to-brand-800 text-white shadow-sm" : "text-slate-600 hover:bg-white hover:text-brand-700"
-              } ${visible ? "" : "opacity-50"}`}
+              } ${hasVisibilityToggle && !visible ? "opacity-50" : ""}`}
             >
               <tab.icon size={15} className={active ? "text-white" : "text-slate-400"} />
               {tab.label}
-              <span
-                role="button"
-                tabIndex={0}
-                onClick={toggleSectionVisibility(tab.id)}
-                onKeyDown={(e) => e.key === "Enter" && toggleSectionVisibility(tab.id)(e)}
-                title={visible ? "Visible on homepage — click to hide" : "Hidden from homepage — click to show"}
-                className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg transition ${
-                  active ? "hover:bg-white/20" : "hover:bg-slate-200"
-                }`}
-              >
-                {visible ? <Eye size={13} /> : <EyeOff size={13} className={active ? "text-white/70" : "text-slate-400"} />}
-              </span>
+              {hasVisibilityToggle && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={toggleSectionVisibility(tab.id)}
+                  onKeyDown={(e) => e.key === "Enter" && toggleSectionVisibility(tab.id)(e)}
+                  title={visible ? "Visible on homepage — click to hide" : "Hidden from homepage — click to show"}
+                  className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg transition ${
+                    active ? "hover:bg-white/20" : "hover:bg-slate-200"
+                  }`}
+                >
+                  {visible ? <Eye size={13} /> : <EyeOff size={13} className={active ? "text-white/70" : "text-slate-400"} />}
+                </span>
+              )}
             </button>
           );
         })}
@@ -738,8 +744,7 @@ export default function HomeContentForm({ content, products = [] }) {
             <SectionTitle icon={Package}>Our Products Section</SectionTitle>
             <p className="mt-1 text-xs text-slate-500">
               This text is used for the &ldquo;Our Products&rdquo; showcase near the top of the homepage — products
-              shown there are pulled from your catalogue automatically. (Also feeds the separate Accessories row,
-              which is hidden by default — see its eye icon on the tab above.)
+              shown there are pulled from your catalogue automatically.
             </p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div>
