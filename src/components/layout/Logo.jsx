@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export default function Logo({ className = "", compact = false }) {
+export default function Logo({ className = "", compact = false, src = "/logo.png" }) {
   return (
     <Link href="/" className={`inline-flex items-center shrink-0 ${className}`} aria-label="Fatima Express home">
       <div
@@ -10,7 +10,7 @@ export default function Logo({ className = "", compact = false }) {
         }`}
       >
         <Image
-          src="/logo.png"
+          src={src || "/logo.png"}
           alt="Fatima Express Logo"
           fill
           sizes={compact ? "176px" : "(max-width: 768px) 176px, 208px"}

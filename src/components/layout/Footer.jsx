@@ -21,7 +21,7 @@ export default function Footer({ contact = site }) {
         {/* Brand Column */}
         <div className="lg:col-span-1.5">
           <div className="rounded-2xl bg-white/95 p-3 w-fit">
-            <Logo />
+            <Logo src={contact.logoUrl} />
           </div>
           <p className="mt-4 text-base leading-relaxed text-slate-300 max-w-sm font-medium">
             Your one-stop shop for premium foil balloons, bubble balloons &amp; party accessories to make every celebration unforgettable.
@@ -117,6 +117,7 @@ export default function Footer({ contact = site }) {
 
       <div className="border-t border-white/10 py-6 text-center text-base text-slate-300 font-medium">
         <p>© {new Date().getFullYear()} {site.name}. All Rights Reserved.</p>
+        <p className="mt-1.5 text-sm text-slate-400">Globex Party Distributor UAE is managed and operated by Fatima Express.</p>
         <p className="mt-1.5 text-sm text-slate-400">
           Developed by{" "}
           <a

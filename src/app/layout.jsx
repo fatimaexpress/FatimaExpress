@@ -26,6 +26,7 @@ export const metadata = {
     "wholesale party supplies Dubai",
     "balloon pump UAE",
     "party decorations Dubai",
+    "Globex Party Distributor UAE",
   ],
   alternates: {
     canonical: "/",
@@ -39,9 +40,12 @@ export const metadata = {
     locale: "en_AE",
   },
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
-    apple: "/favicon.png",
+    // Query param cache-busts the browser's (very sticky) favicon cache —
+    // bump it any time favicon.png is replaced so visitors actually see the
+    // new one instead of the one their browser cached before.
+    icon: "/favicon.png?v=2",
+    shortcut: "/favicon.png?v=2",
+    apple: "/favicon.png?v=2",
   },
 };
 
@@ -49,6 +53,7 @@ const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: site.name,
+  alternateName: "Globex Party Distributor UAE",
   url: SITE_URL,
   logo: `${SITE_URL}/logo.png`,
   description: site.description,
@@ -74,7 +79,7 @@ export default async function RootLayout({ children }) {
         />
         <AuthProvider>
           <CartProvider>
-            <Navbar categories={categories} />
+            <Navbar categories={categories} logoUrl={contact.logoUrl} />
             <main>{children}</main>
             <Footer contact={contact} />
             <CartDrawer />

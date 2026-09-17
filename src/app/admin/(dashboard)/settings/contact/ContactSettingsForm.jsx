@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
-import { LoaderCircle, MapPin, Phone, Share2 } from "lucide-react";
+import { useActionState, useState } from "react";
+import { ImagePlus, LoaderCircle, MapPin, Phone, Share2 } from "lucide-react";
+import ImageUploader from "@/components/admin/ImageUploader";
 import { updateContactSettings } from "@/actions/admin/contact";
 
 const inputClass =
@@ -11,9 +12,25 @@ const sectionClass = "rounded-[1.75rem] border border-slate-100 bg-white p-6 sha
 
 export default function ContactSettingsForm({ contact }) {
   const [state, formAction, pending] = useActionState(updateContactSettings, {});
+  const [logoUrl, setLogoUrl] = useState(contact.logoUrl || null);
 
   return (
     <form action={formAction} className="mt-6 max-w-xl space-y-6">
+      <input type="hidden" name="logoUrl" value={logoUrl || ""} />
+
+      <section className={sectionClass}>
+        <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-brand-100 bg-brand-50 text-brand-700 shadow-xs">
+            <ImagePlus size={17} />
+          </span>
+          <h2 className="font-display text-lg font-bold">Site Logo</h2>
+        </div>
+        <div className="mt-4">
+          <ImageUploader value={logoUrl} onChange={setLogoUrl} previewClassName="h-16 w-48" folder="fatima-express/branding" />
+          <p className="mt-2 text-xs text-slate-400">Shown in the header and footer across the site. Leave empty to use the default logo.</p>
+        </div>
+      </section>
+
       <section className={sectionClass}>
         <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-brand-100 bg-brand-50 text-brand-700 shadow-xs">

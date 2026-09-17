@@ -4,6 +4,7 @@ import { site as staticSite } from "@/data/site";
 // Falls back to the static values in data/site.js whenever the DB is
 // unreachable or contact settings haven't been saved from /admin yet.
 export const DEFAULT_CONTACT = {
+  logoUrl: "",
   whatsapp: staticSite.whatsapp,
   whatsappDisplay: staticSite.whatsappDisplay,
   email: staticSite.email,

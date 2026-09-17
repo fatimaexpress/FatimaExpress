@@ -22,7 +22,7 @@ import { WhatsAppIcon } from "@/components/ui/SocialIcons";
 export const metadata = {
   title: "About Us",
   description:
-    "Fatima Express is a UAE-based wholesale supplier of premium foil balloons, bubble balloons and professional balloon equipment.",
+    "Fatima Express is a UAE-based wholesale supplier of premium foil balloons, bubble balloons and professional balloon equipment. Globex Party Distributor UAE is managed and operated by Fatima Express.",
 };
 
 const statIcons = [MapPin, Boxes, Truck, ShieldCheck];
@@ -142,6 +142,10 @@ export default async function AboutPage() {
             </h2>
             <p className="mt-4 text-base sm:text-lg text-slate-700 leading-relaxed font-medium">
               {story.paragraph}
+            </p>
+
+            <p className="mt-3 text-sm text-slate-500 font-medium">
+              Globex Party Distributor UAE is managed and operated by Fatima Express.
             </p>
 
             <div className="mt-6 flex items-start gap-4 rounded-3xl border border-purple-100/80 bg-white p-5 sm:p-6 shadow-xs">

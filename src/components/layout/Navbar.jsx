@@ -30,7 +30,7 @@ const navLinks = [
   { label: "Contact", href: "/contact", icon: Phone },
 ];
 
-export default function Navbar({ categories = staticCategories }) {
+export default function Navbar({ categories = staticCategories, logoUrl }) {
   const pathname = usePathname();
   const { count, openCart, hydrated } = useCart();
   const { user, signOut } = useAuth();
@@ -81,7 +81,7 @@ export default function Navbar({ categories = staticCategories }) {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-purple-300/50 to-transparent" />
         <div className="container-page flex h-16 items-center justify-between gap-4 lg:h-[68px]">
           {/* Logo */}
-          <Logo />
+          <Logo src={logoUrl} />
 
           {/* Desktop Nav */}
           <nav className="hidden items-center gap-0.5 lg:flex">
@@ -268,7 +268,7 @@ export default function Navbar({ categories = staticCategories }) {
 
         {/* Header */}
         <div className="relative flex items-center justify-between px-5 pb-4 pt-5">
-          <Logo className="scale-90 origin-left" />
+          <Logo className="scale-90 origin-left" src={logoUrl} />
           <button
             type="button"
             onClick={() => setMenuOpen(false)}

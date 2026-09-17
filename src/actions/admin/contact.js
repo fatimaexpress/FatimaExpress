@@ -17,6 +17,7 @@ export async function updateContactSettings(_prevState, formData) {
   const whatsappDisplay = (formData.get("whatsappDisplay") || "").trim() || whatsapp;
 
   const contact = {
+    logoUrl: (formData.get("logoUrl") || "").trim(),
     whatsapp,
     whatsappDisplay,
     email: (formData.get("email") || "").trim(),
@@ -35,7 +36,7 @@ export async function updateContactSettings(_prevState, formData) {
   if (error) return { error: error.message };
 
   revalidatePath("/admin/settings/contact");
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/about");
   revalidatePath("/contact");
   revalidatePath("/checkout");
