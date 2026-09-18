@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, Sparkles, ThumbsUp, CheckCircle2, ArrowRight } from "lucide-react";
 import { DEFAULT_HOME_CONTENT } from "@/lib/homeContent";
+import { whatsappLink } from "@/data/site";
 
 function WhatsAppIcon({ className = "w-5 h-5" }) {
   return (
@@ -13,7 +14,7 @@ function WhatsAppIcon({ className = "w-5 h-5" }) {
   );
 }
 
-export default function FaqSection({ faqs, heading }) {
+export default function FaqSection({ faqs, heading, phone }) {
   const items = faqs?.length ? faqs : DEFAULT_HOME_CONTENT.faqs;
   const { eyebrow, heading: title } = heading ?? DEFAULT_HOME_CONTENT.faqsHeading;
 
@@ -132,7 +133,7 @@ export default function FaqSection({ faqs, heading }) {
                       </div>
 
                       <Link
-                        href={`https://wa.me/971500000000?text=${encodeURIComponent(`Hi, I have a question about: "${faq.question}"`)}`}
+                        href={whatsappLink(`Hi, I have a question about: "${faq.question}"`, phone)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 font-bold text-[#25D366] hover:text-[#20ba5a] hover:underline"
@@ -166,7 +167,7 @@ export default function FaqSection({ faqs, heading }) {
           </div>
 
           <Link
-            href="https://wa.me/971500000000"
+            href={whatsappLink(undefined, phone)}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#25D366] hover:bg-[#20ba5a] px-6 py-3 font-display text-base sm:text-base font-extrabold text-white shadow-lg shadow-emerald-600/20 transition-all hover:scale-105 shrink-0 active:scale-95"

@@ -1,5 +1,5 @@
 import PolicyLayout from "@/components/policy/PolicyLayout";
-import { site } from "@/data/site";
+import { getContactPublic } from "@/lib/siteSettings";
 import { Banknote, Clock, CreditCard, XCircle } from "lucide-react";
 
 export const metadata = {
@@ -16,9 +16,10 @@ const HIGHLIGHTS = [
 const sectionHeading = "flex items-center gap-3 border-b border-purple-100 pb-2.5 font-display text-lg font-extrabold text-slate-950 sm:text-xl";
 const iconClass = "h-5 w-5 shrink-0 text-purple-600 sm:h-6 sm:w-6";
 
-export default function RefundPolicyPage() {
+export default async function RefundPolicyPage() {
+  const contact = await getContactPublic();
   return (
-    <PolicyLayout title="Refund Policy" updated="September 2026" icon={Banknote} highlights={HIGHLIGHTS}>
+    <PolicyLayout title="Refund Policy" updated="September 2026" icon={Banknote} highlights={HIGHLIGHTS} contact={contact}>
       <p className="text-base font-medium leading-relaxed text-slate-700 sm:text-lg">
         This policy explains when refunds are issued and how long they take once a return, cancellation, or replacement request
         is approved.
@@ -59,10 +60,10 @@ export default function RefundPolicyPage() {
 
       <div className="border-t border-purple-100 pt-4 text-sm text-slate-500 sm:text-base">
         Questions about a refund already in progress? Email{" "}
-        <a href={`mailto:${site.email}`} className="font-bold text-purple-700 underline">
-          {site.email}
+        <a href={`mailto:${contact.email}`} className="font-bold text-purple-700 underline">
+          {contact.email}
         </a>{" "}
-        with your order reference, or WhatsApp <span className="font-bold text-purple-700">{site.whatsappDisplay}</span>.
+        with your order reference, or WhatsApp <span className="font-bold text-purple-700">{contact.whatsappDisplay}</span>.
       </div>
     </PolicyLayout>
   );

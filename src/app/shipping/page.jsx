@@ -1,6 +1,6 @@
 import PolicyLayout from "@/components/policy/PolicyLayout";
-import { site } from "@/data/site";
 import { FREE_DELIVERY_THRESHOLD, DUBAI_DELIVERY_FEE, COURIER_FEE } from "@/lib/shipping";
+import { getContactPublic } from "@/lib/siteSettings";
 import { Clock, MapPin, PackageCheck, Truck } from "lucide-react";
 
 export const metadata = {
@@ -17,9 +17,10 @@ const HIGHLIGHTS = [
 const sectionHeading = "flex items-center gap-3 border-b border-purple-100 pb-2.5 font-display text-lg font-extrabold text-slate-950 sm:text-xl";
 const iconClass = "h-5 w-5 shrink-0 text-purple-600 sm:h-6 sm:w-6";
 
-export default function ShippingPolicyPage() {
+export default async function ShippingPolicyPage() {
+  const contact = await getContactPublic();
   return (
-    <PolicyLayout title="Shipping & Delivery" updated="September 2026" icon={Truck} highlights={HIGHLIGHTS}>
+    <PolicyLayout title="Shipping & Delivery" updated="September 2026" icon={Truck} highlights={HIGHLIGHTS} contact={contact}>
       <p className="text-base font-medium leading-relaxed text-slate-700 sm:text-lg">
         <strong className="font-bold text-purple-700">Fatima Express</strong> delivers wholesale foil balloons, bubble balloons and
         party equipment across the United Arab Emirates. Here&apos;s how our delivery process works.
@@ -70,10 +71,10 @@ export default function ShippingPolicyPage() {
 
       <div className="border-t border-purple-100 pt-4 text-sm text-slate-500 sm:text-base">
         Have a question about your delivery? Reach us at{" "}
-        <a href={`mailto:${site.email}`} className="font-bold text-purple-700 underline">
-          {site.email}
+        <a href={`mailto:${contact.email}`} className="font-bold text-purple-700 underline">
+          {contact.email}
         </a>{" "}
-        or WhatsApp <span className="font-bold text-purple-700">{site.whatsappDisplay}</span> with your order reference.
+        or WhatsApp <span className="font-bold text-purple-700">{contact.whatsappDisplay}</span> with your order reference.
       </div>
     </PolicyLayout>
   );

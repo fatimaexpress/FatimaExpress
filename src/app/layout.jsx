@@ -49,26 +49,26 @@ export const metadata = {
   },
 };
 
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: site.name,
-  alternateName: "Globex Party Distributor UAE",
-  url: SITE_URL,
-  logo: `${SITE_URL}/logo.png`,
-  description: site.description,
-  email: site.email,
-  telephone: site.whatsapp,
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Dubai",
-    addressCountry: "AE",
-  },
-  sameAs: [site.facebook, site.instagram].filter(Boolean),
-};
-
 export default async function RootLayout({ children }) {
   const [contact, categories] = await Promise.all([getContactPublic(), getAllCategories()]);
+
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: site.name,
+    alternateName: "Globex Party Distributor UAE",
+    url: SITE_URL,
+    logo: contact.logoUrl || `${SITE_URL}/logo.png`,
+    description: site.description,
+    email: contact.email,
+    telephone: contact.whatsapp,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Dubai",
+      addressCountry: "AE",
+    },
+    sameAs: [contact.facebook, contact.instagram].filter(Boolean),
+  };
 
   return (
     <html lang="en">

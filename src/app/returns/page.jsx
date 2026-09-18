@@ -1,5 +1,5 @@
 import PolicyLayout from "@/components/policy/PolicyLayout";
-import { site } from "@/data/site";
+import { getContactPublic } from "@/lib/siteSettings";
 import { AlertTriangle, CheckCircle2, PackageOpen, RotateCcw } from "lucide-react";
 
 export const metadata = {
@@ -16,9 +16,10 @@ const HIGHLIGHTS = [
 const sectionHeading = "flex items-center gap-3 border-b border-purple-100 pb-2.5 font-display text-lg font-extrabold text-slate-950 sm:text-xl";
 const iconClass = "h-5 w-5 shrink-0 text-purple-600 sm:h-6 sm:w-6";
 
-export default function ReturnsPolicyPage() {
+export default async function ReturnsPolicyPage() {
+  const contact = await getContactPublic();
   return (
-    <PolicyLayout title="Returns & Exchanges" updated="September 2026" icon={RotateCcw} highlights={HIGHLIGHTS}>
+    <PolicyLayout title="Returns & Exchanges" updated="September 2026" icon={RotateCcw} highlights={HIGHLIGHTS} contact={contact}>
       <p className="text-base font-medium leading-relaxed text-slate-700 sm:text-lg">
         We want every order to arrive exactly as expected. If something isn&apos;t right, here&apos;s how returns and exchanges
         work at <strong className="font-bold text-purple-700">Fatima Express</strong>.
@@ -71,10 +72,10 @@ export default function ReturnsPolicyPage() {
 
       <div className="border-t border-purple-100 pt-4 text-sm text-slate-500 sm:text-base">
         To start a return, email{" "}
-        <a href={`mailto:${site.email}`} className="font-bold text-purple-700 underline">
-          {site.email}
+        <a href={`mailto:${contact.email}`} className="font-bold text-purple-700 underline">
+          {contact.email}
         </a>{" "}
-        or WhatsApp <span className="font-bold text-purple-700">{site.whatsappDisplay}</span>.
+        or WhatsApp <span className="font-bold text-purple-700">{contact.whatsappDisplay}</span>.
       </div>
     </PolicyLayout>
   );

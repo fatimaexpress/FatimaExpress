@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { CheckCircle2, ChevronRight, FileText, HelpCircle, Mail, Sparkles } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/SocialIcons";
-import { site, whatsappLink } from "@/data/site";
+import { whatsappLink } from "@/data/site";
+import { DEFAULT_CONTACT } from "@/lib/siteSettings";
 
 const POLICY_LINKS = [
   { label: "Shipping & Delivery", href: "/shipping" },
@@ -11,7 +12,7 @@ const POLICY_LINKS = [
   { label: "Terms & Conditions", href: "/terms" },
 ];
 
-export default function PolicyLayout({ title, updated, icon: Icon = FileText, highlights = [], children }) {
+export default function PolicyLayout({ title, updated, icon: Icon = FileText, highlights = [], contact = DEFAULT_CONTACT, children }) {
   return (
     <div className="relative overflow-hidden bg-[#FAF8FF] py-12 sm:py-16">
       <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[700px] -translate-x-1/2 rounded-full bg-purple-200/25 blur-[120px]" />
@@ -92,7 +93,7 @@ export default function PolicyLayout({ title, updated, icon: Icon = FileText, hi
 
               <div className="flex shrink-0 flex-col items-stretch gap-3 sm:flex-row sm:items-center">
                 <a
-                  href={whatsappLink(`Hi Fatima Express, I have a question about your ${title}.`)}
+                  href={whatsappLink(`Hi Fatima Express, I have a question about your ${title}.`, contact.whatsapp)}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#6D28D9] to-[#9333EA] px-6 py-3 text-sm font-bold text-white shadow-glow transition-all hover:-translate-y-0.5"
@@ -101,7 +102,7 @@ export default function PolicyLayout({ title, updated, icon: Icon = FileText, hi
                   WhatsApp Us
                 </a>
                 <a
-                  href={`mailto:${site.email}`}
+                  href={`mailto:${contact.email}`}
                   className="flex items-center justify-center gap-2 rounded-full border border-purple-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-xs transition hover:border-purple-300 hover:text-purple-700"
                 >
                   <Mail size={16} className="text-purple-600" />

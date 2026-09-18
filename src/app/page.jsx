@@ -10,11 +10,12 @@ import Newsletter from "@/components/home/Newsletter";
 import Reveal from "@/components/ui/Reveal";
 import { getAllProducts } from "@/lib/catalog";
 import { getHomeContentPublic } from "@/lib/homeContent";
+import { getContactPublic } from "@/lib/siteSettings";
 
 export const revalidate = 0;
 
 export default async function HomePage() {
-  const [products, homeContent] = await Promise.all([getAllProducts(), getHomeContentPublic()]);
+  const [products, homeContent, contact] = await Promise.all([getAllProducts(), getHomeContentPublic(), getContactPublic()]);
   const visibility = homeContent.sectionVisibility;
   const featuredProducts = products.filter((p) => p.featured);
   const foilFeatured =
@@ -54,7 +55,7 @@ export default async function HomePage() {
       )}
       {visibility.faqs && (
         <Reveal>
-          <FaqSection faqs={homeContent.faqs} heading={homeContent.faqsHeading} />
+          <FaqSection faqs={homeContent.faqs} heading={homeContent.faqsHeading} phone={contact.whatsapp} />
         </Reveal>
       )}
       {visibility.newsletter && (

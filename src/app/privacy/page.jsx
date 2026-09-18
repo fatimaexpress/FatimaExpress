@@ -1,5 +1,5 @@
 import PolicyLayout from "@/components/policy/PolicyLayout";
-import { site } from "@/data/site";
+import { getContactPublic } from "@/lib/siteSettings";
 import { Database, Eye, Lock, ShieldCheck, UserCheck } from "lucide-react";
 
 export const metadata = {
@@ -16,9 +16,10 @@ const HIGHLIGHTS = [
 const sectionHeading = "flex items-center gap-3 border-b border-purple-100 pb-2.5 font-display text-lg font-extrabold text-slate-950 sm:text-xl";
 const iconClass = "h-5 w-5 shrink-0 text-purple-600 sm:h-6 sm:w-6";
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const contact = await getContactPublic();
   return (
-    <PolicyLayout title="Privacy Policy" updated="September 2026" icon={ShieldCheck} highlights={HIGHLIGHTS}>
+    <PolicyLayout title="Privacy Policy" updated="September 2026" icon={ShieldCheck} highlights={HIGHLIGHTS} contact={contact}>
       <p className="text-base font-medium leading-relaxed text-slate-700 sm:text-lg">
         <strong className="font-bold text-purple-700">Fatima Express</strong> (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;)
         respects your privacy. This policy explains what information we collect when you browse or order from us, and how we
@@ -77,8 +78,8 @@ export default function PrivacyPolicyPage() {
         </h2>
         <p className="mt-3 leading-relaxed">
           You can request access to, correction of, or deletion of your personal data at any time by contacting us at{" "}
-          <a href={`mailto:${site.email}`} className="font-bold text-purple-700 underline">
-            {site.email}
+          <a href={`mailto:${contact.email}`} className="font-bold text-purple-700 underline">
+            {contact.email}
           </a>
           .
         </p>

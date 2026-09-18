@@ -1,5 +1,5 @@
 import PolicyLayout from "@/components/policy/PolicyLayout";
-import { site } from "@/data/site";
+import { getContactPublic } from "@/lib/siteSettings";
 import { FileText, Scale, Shield, ShoppingBag } from "lucide-react";
 
 export const metadata = {
@@ -16,9 +16,10 @@ const HIGHLIGHTS = [
 const sectionHeading = "flex items-center gap-3 border-b border-purple-100 pb-2.5 font-display text-lg font-extrabold text-slate-950 sm:text-xl";
 const iconClass = "h-5 w-5 shrink-0 text-purple-600 sm:h-6 sm:w-6";
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const contact = await getContactPublic();
   return (
-    <PolicyLayout title="Terms & Conditions" updated="September 2026" icon={FileText} highlights={HIGHLIGHTS}>
+    <PolicyLayout title="Terms & Conditions" updated="September 2026" icon={FileText} highlights={HIGHLIGHTS} contact={contact}>
       <p className="text-base font-medium leading-relaxed text-slate-700 sm:text-lg">
         Welcome to <strong className="font-bold text-purple-700">Fatima Express</strong>. By browsing our website, creating an
         account, or placing an order, you agree to the following terms.
@@ -72,8 +73,8 @@ export default function TermsPage() {
 
       <div className="border-t border-purple-100 pt-4 text-sm text-slate-500 sm:text-base">
         Questions about these terms? Email{" "}
-        <a href={`mailto:${site.email}`} className="font-bold text-purple-700 underline">
-          {site.email}
+        <a href={`mailto:${contact.email}`} className="font-bold text-purple-700 underline">
+          {contact.email}
         </a>
         .
       </div>
